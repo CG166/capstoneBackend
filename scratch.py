@@ -112,13 +112,13 @@ for facial_landmarks in result.multi_face_landmarks:
                 point = (x, y)
                 rEyePoints[m] = point
         
-        #Snatching right eye cordinates
+        #Snatching noseCutout cordinates
         for n in range(len(noseCutout)):
             if(i == noseCutout[n]):
                 point = (x, y)
                 noseCutout[n] = point
 
-        #Snatching right eye cordinates
+        #Snatching eyeZoneCutout cordinates
         for o in range(len(eyeZoneCutout)):
             if(i == eyeZoneCutout[o]):
                 point = (x, y)
