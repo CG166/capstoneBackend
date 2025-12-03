@@ -57,7 +57,7 @@ rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 height, width = image.shape[:2]
 
 #Facial Landmarks
-result = face_mesh.process(image)
+result = face_mesh.process(rgb_image)
 
 #Image and Image proccessing
 screen_width = 800
@@ -126,8 +126,38 @@ for facial_landmarks in result.multi_face_landmarks:
 
         cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
 
+#Drawing lip outine
+lPoints = drawFeauture(image, lipPoints)
+
+#Drawing face outline
+fPoints = drawFeauture(image, facePoints)
+
+#Drawing left eye outline
+lEPoints = drawFeauture(image, lEyePoints)
+
+#Drawing right eye outline
+rEPoints = drawFeauture(image, rEyePoints)
+
+#Drawing nose cutout
+nCutout = drawFeauture(image, noseCutout)
+
+#Drawing eye zone cutout
+eZCutout = drawFeauture(image, eyeZoneCutout)
+
+#Grabbing average color from lip
+lColor = getColor(image, lPoints)
+print("\n\nLip Color: ", lColor)
+
+skinColor = getFaceColor(image, fPoints, eZCutout, nCutout, lPoints)
+colorConversions(skinColor)
+
+#getFaceColor(image, fPoints, eZCutout, nCutout, lPoints)
+
+
 
 #Image display
 cv2.imshow("Image", image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+
