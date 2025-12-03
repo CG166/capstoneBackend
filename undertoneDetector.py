@@ -2,7 +2,7 @@
 import cv2
 import numpy as np
 
-undertoneimages = ["test.jpg", "test1.png", "test2.png", "test3.png", "test4.png", "test5.png", "test6.png", "test7.png", "test8.png", "test9.jpg"]
+undertoneimages = ["warmRed.png", "neutralRed.png", "coolRed.png", "warmTan.png", "test4.png", "neutralBeige.png", "coolBrown.png"]
 
 
 ##Images##
@@ -27,3 +27,7 @@ if scale < 1:
 else:
     adjusted_width = width
     adjusted_height = height
+##################################################################################
+#Average the color of the image
+
+
