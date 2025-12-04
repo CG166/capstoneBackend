@@ -17,6 +17,8 @@ facePoints = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 36
 noseCutout = [64, 48, 115, 220, 45, 4, 275, 440, 344, 278, 294, 460, 326, 2, 97, 98]
 eyeZoneCutout = [34, 139, 71, 68, 104, 69, 108, 151, 337, 299, 333, 298, 301, 368, 264, 346, 347, 348, 343, 351, 168, 122, 114, 119, 118, 117]
 lipPoints = [61, 185, 40, 39, 37, 0, 267, 269, 270, 409, 291, 375, 321, 405, 314, 17, 84, 181, 91, 146]
+#Test
+#testZone = [111,117,118,101,36,205,207,187,123]
 
 #Color Analysis Function
 def colorAnalysis(filename):
@@ -76,14 +78,22 @@ def colorAnalysis(filename):
                     point = (x, y)
                     eyeZoneCutout[o] = point
 
+            #for z in range(len(testZone)):
+                #if(i == testZone[z]):
+                    #point = (x, y)
+                    #testZone[z] = point
+                    #cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
+
     #Extracting relevant skin tone
     #Creating relevant polygon
     lPoints = np.array(lipPoints, dtype=np.int32).reshape((-1, 1, 2))
     fPoints = np.array(facePoints, dtype=np.int32).reshape((-1, 1, 2))
     nCutout = np.array(noseCutout, dtype=np.int32).reshape((-1, 1, 2))
     eZCutout = np.array(eyeZoneCutout, dtype=np.int32).reshape((-1, 1, 2))
+    #testPoints = np.array(testZone, dtype=np.int32).reshape((-1, 1, 2))
     #Extracting skintone from CIELAB image
     mask = np.zeros(image.shape[:2], dtype=np.uint8)
+    #cv2.fillPoly(mask, [testPoints], 255)
     cv2.fillPoly(mask, [fPoints], 255)
     cv2.fillPoly(mask, [eZCutout, nCutout, lPoints], 0)
     avgCLAB = cv2.mean(CLABimage, mask=mask)[:3]
@@ -100,10 +110,97 @@ def colorAnalysis(filename):
         hue = hue + 360
 
     ###Test###
-    print(f"\nPrintout for {filename}: \n")
-    print(f" Green-Red axis: {round(a)}\n Blue-Yellow axis: {round(b)}")
-    print(f"\n Hue: {round(hue)}\n")
+    #print(f"\nPrintout for {filename}: \n")
+    #print(f" Green-Red axis: {round(a)}\n Blue-Yellow axis: {round(b)}")
+    #print(f"\n Hue: {round(hue)}\n")
     #print(f"\n Chroma: {round(chroma)} \n Hue: {round(hue)}")
+
+    analysis = ["Your color analysis has been completed!"]
+    undertone = ""
+    overallTone = ""
+    saturation = ""
+    tone1 = ""
+    tone2 = ""
+
+    #Warm or Cool
+    if hue >= 0 and hue <=100:
+        undertone = "warm"
+    elif hue > 100 and hue <= 180:
+        undertone = "neutral"
+    elif hue > 180 and hue <= 240:
+        undertone = "cool-neutral"
+    elif hue > 240:
+        undertone = "cool"
+
+    #Depth/saturation
+    if chroma <= 5:
+        saturation = "soft"
+    elif chroma > 5 and chroma <= 12:
+        saturation = "clear"
+    elif chroma > 12 and chroma <= 22:
+        saturation = "vibrant"
+    elif chroma > 22:
+        saturation = "bold"
+
+    #Tones
+    if a < 0:
+        tone1 = "green"
+    elif a > 0:
+        tone1 = "red"
+
+    if b < 0:
+        tone2 = "blue"
+    elif b > 0:
+        tone2 = "yellow"
+
+    if a == 0 and b == 0:
+        overallTone = "neutral"
+    elif a == 0:
+        overallTone = tone2
+    elif b == 0:
+        overallTone = tone1
+
+    #absolute the values
+    aR = abs(a)
+    bR = abs(b)
+
+    if tone1 == "red" and tone2 == "yellow":
+        if aR == bR:
+            overallTone = "orange/golden"
+        elif aR < bR:
+            overallTone = "warm yellow"  
+        elif aR > bR:
+            overallTone = "peach-red"
+
+    elif tone1 == "green" and tone2 == "yellow":
+        if aR == bR:
+            overallTone = "warm olive"
+        else:
+            overallTone = "olive"
+
+    elif tone1 == "red" and tone2 == "blue":
+        if aR == bR or bR > aR:
+            overallTone = "blue-violet"
+        elif aR > bR:
+            overallTone = "cool red"
+
+    elif tone1 == "green" and tone2 == "blue":
+        if aR == bR:
+            overallTone = "cool olive"
+        else:
+            overallTone = "cool blue"
+
+    #Result Array
+    result = [undertone, overallTone, saturation]
+    
+    ###Test###
+    print(f"\nPrintout for {filename}: \n")
+    print(f"Analysis concludede: " + undertone + "-toned, with " + overallTone + " tones.\n" + "The depth of your skin also means that you are well for " + saturation + " colors.")
+    #print(f" Green-Red axis: {round(a)}\n Blue-Yellow axis: {round(b)}")
+    #print(f"\n Hue: {round(hue)}\n")
+    #print(f"\n Chroma: {round(chroma)} \n Hue: {round(hue)}")
+
+
 
     
 
