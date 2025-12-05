@@ -15,10 +15,7 @@ face_mesh = mp_face_mesh.FaceMesh(
 )
 
 ###Functions###
-def getlength(image, p1, p2):
-    #Draw line
-    cv2.line(image, p1, p2, (0,0,255), 2, cv2.LINE_AA)
-
+def getlength(p1, p2):
     #Get Vector
     x1,y1 = p1
     x2, y2 = p2
@@ -35,14 +32,10 @@ def getlength(image, p1, p2):
 
 def approximatelyEqual(a, b):
     difference = abs(a-b)
-    #print(f"Difference is {difference}")
     PercentDiff = ((a+b)/2) * 0.1
-    #(f"4% difference is {PercentDiff}")
     if difference < PercentDiff:
-        #print(f"{a} and {b} are approximatly the same")
         return True
     else:
-        #print(f"{a} and {b} are not approximatly the same")
         return False
     
 def isWidest(subject, a, b):
@@ -54,51 +47,33 @@ def isWidest(subject, a, b):
             return True    
     return False
 
-def drawLine(image, points):
-    for i in range(len(points) - 1):
-        cv2.line(image, points[i], points[i+1], (100, 0, 0), 2)
-
 def eyeProportion(sBE, lEL, rEL):
     avgEL = (lEL+rEL)/2
 
     if approximatelyEqual(avgEL, sBE):
-        print("Eyes proportionate to face")
         return 0
     elif avgEL > sBE:
-        print("Eyes are large.")
         return 1
     elif avgEL < sBE:
-        print("Eyes are small.")
         return -1
     
 def noseProportion(nW, sBE):
 
     if approximatelyEqual(nW, sBE):
-        print("Nose is proportionate to face")
         return 0
     elif nW > sBE:
-        print("Nose is large on face")
         return 1
     elif nW < sBE:
-        print("Nose is small on face.")
         return -1
     
 def lipProportion(nw, lipLen):
 
     if (nw/lipLen) < 0.8 and (nw/lipLen) > 0.6:
-        print(f"Mouth is proportionate")
         return 0
     elif (nw/lipLen) < 0.6:
-        print(f"Mouth is large.")
         return 1
     elif approximatelyEqual(nw, lipLen) or lipLen < nw or (nw/lipLen) > 0.8:
-        print(f"Mouth is small")
         return -1
-
-    
-
-
-
 
 
 def faceAnalysis(filename):
@@ -115,8 +90,6 @@ def faceAnalysis(filename):
     chin2 = ()
     cheekbone1 = ()
     cheekbone2 = ()
-    cheekbone = [143, 111, 117, 118, 119, 120]
-    face = [54,162, 234,172,176, 152, 400, 397, 454, 389, 284]
     forehead1 = ()
     forehead2 = ()
     nose1 = ()
@@ -159,152 +132,133 @@ def faceAnalysis(filename):
 
             if i == 133:
                 lEyeInnerCorner = (x, y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
             elif i == 362:
                 rEyeInnerCorner = (x, y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
 
             if i == 130:
                 lEyeOuterCorner = (x, y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
             elif i == 359:
                 rEyeOuterCorner = (x, y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
 
             if i == 10:
                 faceTop = (x,y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
             elif i == 152:
                 faceBottom = (x, y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
 
             if i == 172:
                 jawLine1 = (x,y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
             elif i == 397:
                 jawline2 = (x, y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
             
             if i == 176:
                 chin1 = (x,y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
             elif i == 400:
                 chin2 = (x, y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
 
             if i == 234:
                 cheekbone1 = (x,y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
             elif i == 454:
                 cheekbone2 = (x, y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
 
             if i == 21:
                 forehead1 = (x,y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
             elif i == 251:
                 forehead2 = (x, y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
 
             if i == 129:
                 nose1 = (x,y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
             elif i == 358:
                 nose2 = (x, y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
 
             if i == 61:
                 lip1 = (x,y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
             elif i == 291:
                 lip2 = (x, y)
-                cv2.circle(image, (x, y), 3, (100, 0, 0), -1)
-
-            
-
-
-            #Getting face cordinates
-            for k in range(len(face)):
-                if(i == face[k]):
-                    point = (x, y)
-                    face[k] = point
-
-            
-
-            
-
-    
-    #Draw line down face
-    cv2.line(image, faceTop, faceBottom, (100,0,0), 2, cv2.LINE_AA)
-
-    #Cheekbone
-    #drawLine(image, cheekbone)
-
-    #face
-    drawLine(image, face)
+    proportions = []
 
     #Get width of chin
-    chinWidth = getlength(image, chin1, chin2)
-    #print(f"The width of the chin is: {chinWidth}\n")
+    chinWidth = getlength(chin1, chin2)
 
     #Get width of jaw
-    jawWidth = getlength(image, jawLine1, jawline2)
-    #print(f"The width of the jaw is: {jawWidth}\n")
+    jawWidth = getlength(jawLine1, jawline2)
 
     #Get width of cheekbones
-    faceWidth = getlength(image, cheekbone1, cheekbone2)
-    print(f"The width of the face is: {faceWidth}\n")
+    faceWidth = getlength(cheekbone1, cheekbone2)
 
     #Forhead Width
-    foreheadWidth = getlength(image, forehead1, forehead2)
-    #(f"The width of the forehead is: {foreheadWidth}\n")
+    foreheadWidth = getlength(forehead1, forehead2)
 
     #Get face lengths
-    faceLength = getlength(image, faceBottom, faceTop)
+    faceLength = getlength(faceBottom, faceTop)
     faceLength = faceLength + (faceLength/6)
-    
-    print(f"The length of the face is: {faceLength}\n")
 
     #Get length between eyes
-    lenBetweenEyes = getlength(image, lEyeInnerCorner, rEyeInnerCorner)
-    print(f"Length between eyes is {lenBetweenEyes}")
+    lenBetweenEyes = getlength(lEyeInnerCorner, rEyeInnerCorner)
     
-
     #Get r eye length
-    rEyeLength = getlength(image, rEyeOuterCorner, rEyeInnerCorner)
-    print(f"Length of right eye is {rEyeLength}")
-
+    rEyeLength = getlength(rEyeOuterCorner, rEyeInnerCorner)
 
     #Get left eye length
-    lEyeLength = getlength(image, lEyeInnerCorner, lEyeOuterCorner)
-    print(f"Length of right eye is {rEyeLength}")
+    lEyeLength = getlength(lEyeInnerCorner, lEyeOuterCorner)
 
     #Get nose width
-    nWidth = getlength(image, nose1, nose2)
-    print(f"Nose width is {nWidth}")
+    nWidth = getlength(nose1, nose2)
 
     #Get mouth length
-    mWidth = getlength(image, lip1, lip2)
-    print(f"Mouth length is {mWidth}")
+    mWidth = getlength(lip1, lip2)
 
     #Exam Eye Proportion
     eyePorp = eyeProportion(lenBetweenEyes, lEyeLength, rEyeLength)
+    proportions.append(eyePorp)
 
     #Exam nose width
     nosePorp = noseProportion(nWidth, lenBetweenEyes)
+    proportions.append(nosePorp)
 
     #Mouth length
     mouthPorp = lipProportion(nWidth, mWidth)
-
-
-
-    #approximatelyEqual(foreheadWidth, faceWidth)
-    #approximatelyEqual(jawWidth, faceWidth)
+    proportions.append(mouthPorp)
 
     faceshape = ""
     focalpoints=[]
-    #Faceshape determination
 
+    #Find focal points
+    eyes = proportions[0]
+    nose = proportions[1]
+    mouth = proportions[2]
+
+    if nose > eyes and nose > mouth and mouth == eyes:
+        focalpoints = ["nose"]
+    elif nose > eyes and nose > mouth and mouth != eyes:
+        if mouth > eyes:
+            focalpoints = ["nose", "mouth"]
+        else:
+            focalpoints = ["eyes", "nose"]
+    elif mouth > nose and mouth > eyes and nose == eyes:
+        focalpoints = ["mouth"]
+    elif mouth > nose and mouth > eyes and nose != eyes:
+        if nose > eyes:
+            focalpoints = ["nose", "mouth"]
+        else:
+            focalpoints = ["eyes", "mouth"]
+    elif eyes > mouth and eyes > nose and mouth == nose:
+        focalpoints = ["eyes"]
+    elif eyes > mouth and eyes > nose and mouth != nose:
+        if mouth > nose:
+            focalpoints = ["eyes", "mouth"]
+        else:
+            focalpoints = ["eyes", "nose"]
+    elif mouth == eyes and eyes == nose:
+            focalpoints = []
+    elif eyes < mouth and eyes < nose and nose == mouth:
+        focalpoints = ["nose", "mouth"]
+    elif nose < mouth and nose < eyes and eyes == mouth:
+        focalpoints = ["eyes", "mouth"]
+    elif mouth < eyes and mouth < nose and nose == eyes:
+        focalpoints = ["eyes", "nose"]
+
+
+    #Faceshape determination
     if approximatelyEqual(faceLength, faceWidth) == True and isWidest(faceWidth) == True:
         faceshape = "round"
     elif (faceLength/faceWidth) >= (1.46) and approximatelyEqual(foreheadWidth, jawWidth) == True:
@@ -324,41 +278,11 @@ def faceAnalysis(filename):
 
     print(f"\nFor {filename}\n")
     print(f"Faceshape is: {faceshape}\n")
-    
-
-    #Image display
-    cv2.imshow("Image", image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    print(f"Focal Points are {focalpoints}")
 
 
 ##RUN##
-testimages = ["test.jpg", "test1.png", "test2.png", "test3.png", "test4.png", "test5.png", "test7.png", "test8.png", "test9.jpg"]
+testimages = ["test.jpg", "test1.png", "test2.png", "test3.png", "test4.png", "test5.png", "test7.png", "test8.png", "test9.jpg", "square.png"]
 
 for i in range(len(testimages)):
     faceAnalysis(testimages[i])
-
-faceAnalysis("square.png")
